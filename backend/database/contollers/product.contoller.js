@@ -1,11 +1,11 @@
-const db = require("../db.js");
+const db = require('../db.js');
 
 class productController {
   async createProduct(req, res) {
     const { name, description, price, quantity, img } = req.body;
     const newProduct = await db.query(
       `INSERT INTO products (name, description, price, quantity, img)
-                                            VALUES (1$, 2$, 3$, 4$, 5$) RETURNING *`,
+        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [name, description, price, quantity, img]
     );
     res.json(newProduct.rows[0]);
@@ -31,10 +31,9 @@ class productController {
     const { id, name, description, price, quantity, img } = req.body;
     const newProduct = await db.query(
       `UPDATE products SET 
-                                            name = $1, description = $2, 
-                                            price = $3, quantity = $4, 
-                                            img = $5, WHERE id = $6
-                                         RETURNING`,
+        name = $1, description = $2, 
+        price = $3, quantity = $4, 
+        img = $5 WHERE id = $6 RETURNING *`,
       [name, description, price, quantity, img, id]
     );
     res.json(newProduct.rows[0]);
