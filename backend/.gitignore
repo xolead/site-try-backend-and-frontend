@@ -1,1 +1,2 @@
 node_modules/
+# для восстановления npm install express pg
