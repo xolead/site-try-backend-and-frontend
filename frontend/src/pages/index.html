@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Мой сайт</title>
+  </head>
+  <body>
+    <!-- Контейнер для навигации -->
+    <div id="navbar-container"></div>
+
+    <main>
+      <h1>Контент страницы...</h1>
+    </main>
+
+    <script>
+      // Загружаем навигацию
+      fetch('/components/navbar.html')
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById('navbar-container').innerHTML = html;
+
+          // Подсвечиваем активную страницу
+          const currentPage = window.location.pathname.split('/').pop();
+          document.querySelectorAll('.nav-link').forEach((link) => {
+            if (link.getAttribute('href') === currentPage) {
+              link.style.background = '#007bff';
+            }
+          });
+        })
+        .catch((error) => console.error('Ошибка загрузки навигации:', error));
+    </script>
+  </body>
+</html>
