@@ -1,16 +1,17 @@
+'use client';
+
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ProductCard.module.css';
 
-export default function ProductCard({ product, onAddToCart }) {
-  const [isAdding, setIsAdding] = useState(false);
-
-  const handleAddToCart = async () => {
-    setIsAdding(true);
-    await onAddToCart();
-    setIsAdding(false);
-  };
+export default function ProductCard({
+  product,
+  onDelete,
+  onEdit,
+  onAddToCart,
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -20,26 +21,76 @@ export default function ProductCard({ product, onAddToCart }) {
     }).format(price);
   };
 
+  const handleDeleteClick = async () => {
+    if (!showConfirm) {
+      setShowConfirm(true);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await onDelete(product.id);
+    } catch (error) {
+      console.error('Ошибка удаления:', error);
+    } finally {
+      setIsDeleting(false);
+      setShowConfirm(false);
+    }
+  };
+
+  const handleEditClick = () => {
+    if (onEdit) {
+      onEdit(product);
+    }
+  };
+
   return (
     <div className={styles.card}>
       {/* Изображение товара */}
       <div className={styles.imageContainer}>
-        {product.img ? (
-          <Image
-            src={product.img}
+        {product.image_url ? (
+          <img
+            src={product.image_url}
             alt={product.name}
-            width={280}
-            height={200}
             className={styles.image}
-            unoptimized // Для внешних изображений
+            loading="lazy"
           />
         ) : (
           <div className={styles.placeholderImage}>🛍️</div>
         )}
 
+        {/* Бейдж "Нет в наличии" */}
         {product.quantity === 0 && (
           <div className={styles.outOfStock}>Нет в наличии</div>
         )}
+
+        {/* Кнопки управления (правый верхний угол) */}
+        <div className={styles.controls}>
+          <button
+            onClick={handleEditClick}
+            className={styles.editButton}
+            title="Редактировать"
+          >
+            ✏️
+          </button>
+
+          <button
+            onClick={handleDeleteClick}
+            className={`${styles.deleteButton} ${
+              showConfirm ? styles.confirm : ''
+            }`}
+            disabled={isDeleting}
+            title={showConfirm ? 'Подтвердить удаление' : 'Удалить товар'}
+          >
+            {isDeleting ? (
+              <span className={styles.miniSpinner}></span>
+            ) : showConfirm ? (
+              '❓'
+            ) : (
+              '🗑️'
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Информация о товаре */}
@@ -64,28 +115,44 @@ export default function ProductCard({ product, onAddToCart }) {
             </span>
           </div>
 
-          <button
-            className={`${styles.cartButton} ${
-              product.quantity === 0 ? styles.disabled : ''
-            }`}
-            onClick={handleAddToCart}
-            disabled={product.quantity === 0 || isAdding}
-          >
-            {isAdding ? (
-              <>
-                <span className={styles.spinner}></span>
-                Добавляем...
-              </>
-            ) : product.quantity === 0 ? (
-              'Нет в наличии'
-            ) : (
-              <>
-                <span className={styles.cartIcon}>🛒</span>В корзину
-              </>
-            )}
-          </button>
+          <div className={styles.actionButtons}>
+            <button
+              className={`${styles.cartButton} ${
+                product.quantity === 0 ? styles.disabled : ''
+              }`}
+              onClick={() => onAddToCart(product)}
+              disabled={product.quantity === 0}
+            >
+              <span className={styles.cartIcon}>🛒</span>
+              Купить
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Подтверждение удаления */}
+      {showConfirm && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmDialog}>
+            <p>Удалить "{product.name}"?</p>
+            <div className={styles.confirmActions}>
+              <button
+                onClick={handleDeleteClick}
+                className={styles.confirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Удаление...' : 'Да, удалить'}
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className={styles.cancelDelete}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

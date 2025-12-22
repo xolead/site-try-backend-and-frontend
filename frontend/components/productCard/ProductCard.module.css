@@ -7,6 +7,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card:hover {
@@ -44,13 +45,86 @@
 .outOfStock {
   position: absolute;
   top: 15px;
-  right: 15px;
+  left: 15px;
   background: rgba(229, 62, 62, 0.9);
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
+  z-index: 2;
+}
+
+/* Кнопки управления */
+.controls {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.editButton,
+.deleteButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.editButton:hover {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.deleteButton {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.2);
+}
+
+.deleteButton.confirm {
+  background: rgba(229, 62, 62, 0.9);
+  color: white;
+  animation: pulse 0.5s infinite alternate;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.miniSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 /* Контент */
@@ -119,9 +193,14 @@
   margin-top: 4px;
 }
 
-/* Кнопка корзины */
+/* Кнопки действий */
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
 .cartButton {
-  padding: 12px 20px;
+  padding: 10px 18px;
   background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
   color: white;
   border: none;
@@ -148,21 +227,75 @@
   transform: none;
 }
 
-.cartIcon {
-  font-size: 16px;
+/* Подтверждение удаления */
+.confirmOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 16px;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.confirmDialog {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 80%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.confirmDialog p {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirmDelete {
+  padding: 10px 20px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.confirmDelete:hover:not(:disabled) {
+  background: #c53030;
+  transform: translateY(-2px);
+}
+
+.confirmDelete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelDelete {
+  padding: 10px 20px;
+  background: #e2e8f0;
+  color: #4a5568;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancelDelete:hover {
+  background: #cbd5e0;
+  transform: translateY(-2px);
 }
