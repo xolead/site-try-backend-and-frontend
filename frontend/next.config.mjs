@@ -9,6 +9,34 @@ const nextConfig = {
       },
     ];
   },
+
+  images: {
+    domains: [
+      'www.iport.ru',
+      'cdn.iport.ru',
+      'localhost',
+      // добавьте другие домены, если нужно
+    ],
+
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.iport.ru', // Все поддомены iport.ru
+      },
+      {
+        protocol: 'https',
+        hostname: 'iport.ru',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', // Разрешает все домены (менее безопасно)
+      },
+    ],
+  },
 };
 
 export default nextConfig;

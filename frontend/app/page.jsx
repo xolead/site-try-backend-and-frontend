@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/components/Header/Header';
+import Header from '@/components/header/Header';
 import ProductCard from '@/components/productCard/ProductCard';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
@@ -108,12 +108,6 @@ export default function HomePage() {
                   ? `Найдено ${products.length} товаров`
                   : 'Нет товаров в наличии'}
               </p>
-              <button
-                onClick={() => router.push('/create')}
-                className={styles.createButton}
-              >
-                ➕ Добавить товар
-              </button>
             </div>
           </div>
 

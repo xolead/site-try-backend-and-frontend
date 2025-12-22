@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({
@@ -48,22 +49,32 @@ export default function ProductCard({
     <div className={styles.card}>
       {/* Изображение товара */}
       <div className={styles.imageContainer}>
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className={styles.image}
-            loading="lazy"
-          />
+        {product.img ? (
+          <>
+            {/* Используем Next.js Image для оптимизации */}
+            <Image
+              src={product.img}
+              alt={product.name || 'Изображение товара'}
+              className={styles.image}
+              width={300} // Укажите ширину
+              height={200} // Укажите высоту
+              priority={false} // Отключаем приоритетную загрузку
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+
+            {/* Фолбэк если изображение не загрузится */}
+            <div className={styles.imageFallback}></div>
+          </>
         ) : (
-          <div className={styles.placeholderImage}>🛍️</div>
+          <div className={styles.placeholderImage}>
+            <span>🛍️</span>
+          </div>
         )}
 
         {/* Бейдж "Нет в наличии" */}
         {product.quantity === 0 && (
           <div className={styles.outOfStock}>Нет в наличии</div>
         )}
-
         {/* Кнопки управления (правый верхний угол) */}
         <div className={styles.controls}>
           <button
