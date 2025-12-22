@@ -1,0 +1,21 @@
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600; /* Полужирный */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container_base {
+  margin-top: 70px;
+}

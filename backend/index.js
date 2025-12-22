@@ -1,23 +1,21 @@
 const express = require('express');
-const PORT = 8080;
-const path = require('path');
+const cors = require('cors');
 const productRouter = require('./database/routes/product.routes');
+
 const app = express();
+const PORT = 8080;
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(productRouter);
 
-app.use('/components', express.static(path.join(__dirname, 'components')));
-app.use('/pages', express.static(path.join(__dirname, 'pages')));
-const staticPath = path.join(__dirname, '../frontend/src/pages');
-
-app.use(express.static(staticPath));
-app.get('/', (req, res) => {
-  const indexPath = path.join(__dirname, '../frontend/src/pages', 'index.html');
-  console.log('Путь к index.html:', indexPath);
-  res.sendFile(indexPath);
-});
-
 app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`Express сервер запущен на порту ${PORT}`);
 });
